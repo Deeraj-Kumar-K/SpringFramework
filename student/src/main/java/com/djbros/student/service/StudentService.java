@@ -1,20 +1,28 @@
 package com.djbros.student.service;
 
 import com.djbros.student.controller.Student;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-@Repository
-@Component
 public class StudentService {
-    public List<Student> getStudent() {
-        return List.of(new Student(1L, "AJ", 22),
-                new Student(2L, "CJ", 25)
-        );
+
+    private StudentRepository studentRepository;
+
+    @Autowired
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
+
+    public List<Student> getAllStudents() {
+        return studentRepository.getAllStudents();
+    }
+
+    public Student getStudent(Long id) {
+        Optional<Student> studentOptional = studentRepository.getStudent(id);
+        return studentOptional.orElse(null);
     }
 }

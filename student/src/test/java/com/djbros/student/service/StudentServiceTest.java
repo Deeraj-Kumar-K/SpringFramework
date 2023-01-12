@@ -2,6 +2,7 @@ package com.djbros.student.service;
 
 import com.djbros.student.controller.Student;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,4 +50,22 @@ class StudentServiceTest {
         Student student = studentService.getStudent(1L);
         assertThat(student).isNull();
     }
+
+    @Test
+    void getStudentWithId() {
+        Optional<Student> studentOptional = Optional.of(new Student(1L, "Sonu", 23));
+        when(studentRepository.getStudent(1L)).thenReturn(studentOptional);
+        Student student = studentService.getStudent(1L);
+        assertThat(student.getName()).isEqualTo("Sonu");
+    }
+
+    @Test
+    @DisplayName("Check id of returned student")
+    public void getStudentWithId_fail() {
+        Optional<Student> studentOptional = Optional.of(new Student(1L, "DJ", 23));
+        when(studentRepository.getStudent(1L)).thenReturn(studentOptional);
+        Student student = studentService.getStudent(1L);
+        assertEquals(studentOptional.get().getId(), student.getId(), "Student id match");
+    }
+
 }
